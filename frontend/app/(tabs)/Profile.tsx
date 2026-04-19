@@ -2,19 +2,19 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
-    Alert,
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { useAuth } from "../_contexts/AuthContext";
 
 export default function Profile() {
   const router = useRouter();
-  const { logout, user } = useAuth();
+  const { logout } = useAuth();
 
   // 🔥 Logout Function with confirmation
   const handleLogout = () => {
@@ -29,7 +29,7 @@ export default function Profile() {
           onPress: async () => {
             try {
               await logout();
-              router.replace("/signup"); // redirect
+              router.replace('/login');
             } catch (error) {
               console.log("Logout Error:", error);
             }
@@ -49,8 +49,8 @@ export default function Profile() {
           }}
           style={styles.avatar}
         />
-        <Text style={styles.name}>{user?.name || "User"}</Text>
-        <Text style={styles.email}>{user?.email || "user@email.com"}</Text>
+        <Text style={styles.name}>User</Text>
+        <Text style={styles.email}>Manage your account</Text>
       </View>
 
       {/* ⚙️ Menu */}

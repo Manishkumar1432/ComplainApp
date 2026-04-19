@@ -1,14 +1,15 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity
 } from 'react-native';
 import { useAuth } from './_contexts/AuthContext';
+import { apiUrl } from './_utils/api';
 
 export default function Signup() {
   const [name, setName] = useState('');
@@ -37,7 +38,7 @@ export default function Signup() {
     }
 
     try {
-      const response = await fetch('http://10.115.134.30:5000/api/auth/register', {
+      const response = await fetch(apiUrl('/auth/register'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,14 +50,15 @@ export default function Signup() {
       if (response.ok) {
         login(data.token); // Auto login after signup
         // Navigate directly to the Home tab
-        router.replace('/Home');
+        router.replace('/(tabs)/Home');
       } else {
         // Handle both error formats
         const errorMsg = data.msg || (data.errors?.[0]?.msg) || 'Signup failed';
         Alert.alert('Error', errorMsg);
       }
     } catch (error) {
-      Alert.alert('Error', 'Network error: ' + error.message);
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      Alert.alert('Error', 'Network error: ' + message);
     }
   };
 

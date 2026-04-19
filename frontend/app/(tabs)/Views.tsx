@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Image, StyleSheet, Text, View } from "react-native";
+import { apiUrl } from "../_utils/api";
 
 export default function ViewComplaints() {
   const [complaints, setComplaints] = useState([]);
@@ -9,7 +10,7 @@ export default function ViewComplaints() {
   useEffect(() => {
     const fetchComplaints = async () => {
       try {
-        const response = await fetch('http://10.115.134.30:5000/api/complaints/all');
+        const response = await fetch(apiUrl('/complaints/all'));
         if (!response.ok) {
           throw new Error('Unable to load complaints');
         }

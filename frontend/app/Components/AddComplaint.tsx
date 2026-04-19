@@ -3,16 +3,17 @@ import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  Alert,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Alert,
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { useAuth } from '../_contexts/AuthContext';
+import { apiUrl } from '../_utils/api';
 
 const AddComplaint = () => {
   const [title, setTitle] = useState('');
@@ -64,7 +65,7 @@ const AddComplaint = () => {
     });
 
     try {
-      const response = await fetch('http://10.115.134.30:5000/api/complaints', {
+      const response = await fetch(apiUrl('/complaints'), {
         method: 'POST',
         headers: {
           'x-auth-token': token,

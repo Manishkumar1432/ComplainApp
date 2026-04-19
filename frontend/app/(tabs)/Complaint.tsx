@@ -13,6 +13,7 @@ import {
   View,
 } from "react-native";
 import { useAuth } from "../_contexts/AuthContext";
+import { apiUrl } from "../_utils/api";
 
 export default function Complaint() {
   const [title, setTitle] = useState("");
@@ -45,7 +46,7 @@ export default function Complaint() {
 
   const handleSubmit = async () => {
     const finalCategory =
-      category === "Others" ? otherCategory : category;
+      category === "Others" ? otherCategory.trim() : category.trim();
 
     if (!title || !description || !finalCategory) {
       Alert.alert("Error", "Please fill all fields");
@@ -68,7 +69,7 @@ export default function Complaint() {
     });
 
     try {
-      const response = await fetch('http://10.115.134.30:5000/api/complaints', {
+      const response = await fetch(apiUrl('/complaints'), {
         method: 'POST',
         headers: {
           'x-auth-token': token,

@@ -48,3 +48,27 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## Projects
+
+### ComplaneDaalo - Complaint Management Platform - MERN Stack, MongoDB, Express, React Native (Expo), Node.js | Apr 2026
+
+- Built a full-stack complaint management platform with secure user authentication and profile management.
+- Developed complaint registration and tracking workflows with status updates and user-specific complaint views.
+- Implemented real-time chat support between users and system administrators for faster issue resolution.
+- Integrated AWS S3-based file upload handling for complaint-related attachments.
+
+### Education Platform (LMS) - MERN Stack, MongoDB, Express, React, Node.js | Live | Feb 2026
+
+- Built full-stack Learning Management System supporting Student and Teacher roles.
+- Implemented JWT-based authentication and role-based access control.
+- Developed quiz system with timer and auto-submit functionality.
+- Integrated Notes, Video Management, and Dashboard modules.
+- Implemented Cloudinary file uploads and PDF export.
+- Live Link: education-system-3-sj34.onrender.com
+
+### Painting App - Android, Java, Figma | Sep 2024
+
+- Designed and developed a feature-rich drawing application using Java for Android, enabling a smooth and intuitive user experience.
+- Implemented core functionalities including multiple brushes, color selection, custom colors, shapes, text insertion, undo/redo, canvas clearing, and zoom controls.
+- Integrated local storage to allow users to save artwork directly to the device gallery.

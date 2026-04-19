@@ -30,10 +30,11 @@ function RootLayoutContent() {
       {!token ? (
         <>
           <Stack.Screen name="index" options={{ title: 'Signup' }} />
+          <Stack.Screen name="signup" options={{ title: 'Signup' }} />
           <Stack.Screen name="login" options={{ title: 'Login' }} />
         </>
       ) : (
-        <Stack.Screen name="Home" options={{ title: 'Home' }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       )}
     </Stack>
   );

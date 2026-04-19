@@ -1,14 +1,15 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    Alert,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { useAuth } from './_contexts/AuthContext';
+import { apiUrl } from './_utils/api';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -23,7 +24,7 @@ export default function Login() {
     }
 
     try {
-      const response = await fetch('http://10.115.134.30:5000/api/auth/login', {
+      const response = await fetch(apiUrl('/auth/login'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -34,12 +35,13 @@ export default function Login() {
       if (response.ok) {
         login(data.token);
         // Navigate directly to the Home tab
-        router.replace('/Home');
+        router.replace('/(tabs)/Home');
       } else {
         Alert.alert('Error', data.msg || 'Login failed');
       }
     } catch (error) {
-      Alert.alert('Error', 'Network error: ' + error.message);
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      Alert.alert('Error', 'Network error: ' + message);
     }
   };
 
@@ -64,7 +66,7 @@ export default function Login() {
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => router.push('/')}>
-        <Text style={styles.link}>Don't have an account? Sign up</Text>
+        <Text style={styles.link}>Don&apos;t have an account? Sign up</Text>
       </TouchableOpacity>
     </View>
   );

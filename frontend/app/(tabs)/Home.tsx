@@ -2,23 +2,41 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { useAuth } from "../_contexts/AuthContext";
+import { apiUrl } from "../_utils/api";
+
+type ComplaintItem = {
+  _id: string;
+  title: string;
+  status: string;
+  category: string;
+};
+
+type CardProps = {
+  icon: React.ComponentProps<typeof Ionicons>["name"];
+  title: string;
+  onPress?: () => void;
+};
 
 export default function Home() {
   const router = useRouter();
   const { token } = useAuth();
-  const [complaints, setComplaints] = useState([]);
+  const [complaints, setComplaints] = useState<ComplaintItem[]>([]);
 
   useEffect(() => {
     const fetchComplaints = async () => {
       try {
-        const response = await fetch('http://10.115.134.30:5000/api/complaints', {
+        if (!token) {
+          return;
+        }
+
+        const response = await fetch(apiUrl('/complaints'), {
           headers: {
             'x-auth-token': token,
           },
@@ -50,7 +68,7 @@ export default function Home() {
         <Card
           icon="add-circle"
           title="New Complaint"
-          onPress={() => router.push("/Complaint")} // ✅ correct path
+          onPress={() => router.push('/(tabs)/Complaint')}
         />
 
         <Card
@@ -95,7 +113,7 @@ export default function Home() {
 }
 
 // ✅ FIXED CARD COMPONENT
-const Card = ({ icon, title, onPress }) => (
+const Card = ({ icon, title, onPress }: CardProps) => (
   <TouchableOpacity style={styles.card} onPress={onPress}>
     <Ionicons name={icon} size={28} color="#4A90E2" />
     <Text style={styles.cardText}>{title}</Text>
