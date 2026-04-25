@@ -23,8 +23,3 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     originalError(...args);
   };
 }
-
-// Dummy default export so Expo Router does not treat this module as a route
-export default function WebFix() {
-  return null;
-}

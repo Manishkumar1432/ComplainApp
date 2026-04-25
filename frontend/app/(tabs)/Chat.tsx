@@ -11,8 +11,8 @@ import {
     View,
 } from 'react-native';
 import { io, Socket } from 'socket.io-client';
-import { useAuth } from '../_contexts/AuthContext';
-import { apiUrl, SOCKET_BASE_URL } from '../_utils/api';
+import { useAuth } from '../../src/contexts/AuthContext';
+import { apiUrl, SOCKET_BASE_URL } from '../../src/utils/api';
 
 type Sender = {
   _id: string;
@@ -146,12 +146,23 @@ const Chat = () => {
   }, [connectionState]);
 
   const renderItem = ({ item }: { item: ChatMessage }) => {
-    const isMine = currentUserId && item.sender?._id === currentUserId;
+    const isMine = currentUserId && item?.sender?._id === currentUserId;
+    if (!item) return null;
+
+    let timeStr = '';
+    try {
+      if (item.createdAt) {
+        timeStr = new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+    } catch {
+      timeStr = '';
+    }
+
     return (
       <View style={[styles.messageWrap, isMine ? styles.myWrap : styles.otherWrap]}>
         {!isMine ? <Text style={styles.senderName}>{item.sender?.name || 'User'}</Text> : null}
         <Text style={[styles.messageText, isMine ? styles.myText : styles.otherText]}>{item.message}</Text>
-        <Text style={styles.timestamp}>{new Date(item.createdAt).toLocaleTimeString()}</Text>
+        <Text style={styles.timestamp}>{timeStr}</Text>
       </View>
     );
   };
@@ -160,7 +171,7 @@ const Chat = () => {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={80}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
     >
       <View style={styles.header}>
         <Text style={styles.title}>Community Chat</Text>
@@ -175,9 +186,10 @@ const Chat = () => {
       ) : (
         <FlatList
           data={messages}
-          keyExtractor={(item) => item._id}
+          keyExtractor={(item) => item?._id || Math.random().toString()}
           renderItem={renderItem}
           contentContainerStyle={styles.listContent}
+          initialNumToRender={20}
         />
       )}
 

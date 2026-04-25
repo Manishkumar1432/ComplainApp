@@ -8,8 +8,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useAuth } from './_contexts/AuthContext';
-import { apiUrl } from './_utils/api';
+import { useAuth } from '../src/contexts/AuthContext';
+import { apiUrl } from '../src/utils/api';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -33,7 +33,7 @@ export default function Login() {
       });
       const data = await response.json();
       if (response.ok) {
-        login(data.token);
+        await login(data.token, data.user);
         // Navigate directly to the Home tab
         router.replace('/(tabs)/Home');
       } else {

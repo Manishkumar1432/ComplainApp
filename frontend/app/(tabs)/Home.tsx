@@ -8,8 +8,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useAuth } from "../_contexts/AuthContext";
-import { apiUrl } from "../_utils/api";
+import { useAuth } from "../../src/contexts/AuthContext";
+import { apiUrl } from "../../src/utils/api";
 
 type ComplaintItem = {
   _id: string;
@@ -74,7 +74,7 @@ export default function Home() {
         <Card
           icon="time"
           title="Track Status"
-          onPress={() => router.push("/Components/MyStatus")}
+          onPress={() => router.push("/Pages/MyStatus")}
         />
       </View>
 
@@ -82,24 +82,24 @@ export default function Home() {
       <Text style={styles.sectionTitle}>Categories</Text>
 
       <View style={styles.row}>
-        <Card icon="flash" title="Electricity" />
-        <Card icon="water" title="Water" />
+        <Card icon="flash" title="Electricity"   onPress={() => router.push('/Complaint')}/>
+        <Card icon="water" title="Water" onPress={() => router.push('/Complaint')} />
       </View>
 
       <View style={styles.row}>
-        <Card icon="car" title="Road" />
-        <Card icon="trash" title="Garbage" />
+        <Card icon="car" title="Road" onPress={() => router.push('/Complaint')} />
+        <Card icon="trash" title="Garbage" onPress={() => router.push('/Complaint')} />
       </View>
 
 
       {/* 📄 Recent Complaints */}
       <Text style={styles.sectionTitle}>Recent Complaints</Text>
-      {complaints.length > 0 ? (
+      {complaints && complaints.length > 0 ? (
         complaints.slice(0, 3).map((complaint) => (
-          <View key={complaint._id} style={styles.complaintCard}>
-            <Text style={styles.complaintTitle}>{complaint.title}</Text>
-            <Text>Status: {complaint.status}</Text>
-            <Text>Category: {complaint.category}</Text>
+          <View key={complaint?._id || Math.random().toString()} style={styles.complaintCard}>
+            <Text style={styles.complaintTitle}>{complaint?.title || 'No Title'}</Text>
+            <Text>Status: {complaint?.status || 'Unknown'}</Text>
+            <Text>Category: {complaint?.category || 'General'}</Text>
           </View>
         ))
       ) : (

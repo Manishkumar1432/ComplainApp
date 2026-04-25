@@ -9,13 +9,13 @@ backend/.env
 frontend/.env
 
 # Expo
-frontend/.expo/
-frontend/dist/
-frontend/web-build/
+.expo/
+dist/
+web-build/
 
 # Android/iOS
-frontend/android/
-frontend/ios/
+android/
+ios/
 
 # VS Code
 .vscode/
@@ -33,3 +33,4 @@ yarn-debug.log*
 
 expo-env.d.ts
 # @end expo-cli
+

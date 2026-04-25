@@ -1,15 +1,15 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity
 } from 'react-native';
-import { useAuth } from './_contexts/AuthContext';
-import { apiUrl } from './_utils/api';
+import { useAuth } from '../src/contexts/AuthContext';
+import { apiUrl } from '../src/utils/api';
 
 export default function Signup() {
   const [name, setName] = useState('');
@@ -48,7 +48,7 @@ export default function Signup() {
       const data = await response.json();
       
       if (response.ok) {
-        login(data.token); // Auto login after signup
+        await login(data.token, data.user); // Auto login after signup and store user profile
         // Navigate directly to the Home tab
         router.replace('/(tabs)/Home');
       } else {

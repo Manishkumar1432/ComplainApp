@@ -1,11 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Image, StyleSheet, Text, View } from "react-native";
-import { apiUrl } from "../_utils/api";
+import { apiUrl } from '../../src/utils/api';
+
+interface Complaint {
+  _id: string;
+  title: string;
+  description?: string;
+  category?: string;
+  location?: string;
+  photos?: string[];
+  status?: string;
+}
 
 export default function ViewComplaints() {
-  const [complaints, setComplaints] = useState([]);
+  const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchComplaints = async () => {
@@ -17,7 +27,7 @@ export default function ViewComplaints() {
         const data = await response.json();
         setComplaints(data);
       } catch (err) {
-        setError(err.message || 'Failed to load complaints');
+        setError(err instanceof Error ? err.message : 'Failed to load complaints');
       } finally {
         setLoading(false);
       }
@@ -26,35 +36,38 @@ export default function ViewComplaints() {
     fetchComplaints();
   }, []);
 
-  const renderItem = ({ item }) => (
-    <View style={styles.card}>
-      <Text style={styles.title}>{item.title}</Text>
-      <Text style={styles.category}>{item.category || 'General'}</Text>
-      {item.description ? <Text style={styles.description}>{item.description}</Text> : null}
-      {item.location ? <Text style={styles.location}>Location: {item.location}</Text> : null}
-      {item.photos && item.photos.length > 0 ? (
-        <View style={styles.photoRow}>
-          {item.photos.map((photoUri, index) => (
-            <Image
-              key={`${item._id}-${index}`}
-              source={{ uri: photoUri }}
-              style={styles.photo}
-            />
-          ))}
-        </View>
-      ) : null}
-      <Text
-        style={[
-          styles.status,
-          item.status === "Pending"
-            ? styles.pending
-            : styles.resolved,
-        ]}
-      >
-        {item.status}
-      </Text>
-    </View>
-  );
+  const renderItem = ({ item }: { item: Complaint }) => {
+    if (!item) return null;
+    return (
+      <View style={styles.card}>
+        <Text style={styles.title}>{item.title || 'No Title'}</Text>
+        <Text style={styles.category}>{item.category || 'General'}</Text>
+        {item.description ? <Text style={styles.description}>{item.description}</Text> : null}
+        {item.location ? <Text style={styles.location}>Location: {item.location}</Text> : null}
+        {item.photos && Array.isArray(item.photos) && item.photos.length > 0 ? (
+          <View style={styles.photoRow}>
+            {item.photos.map((photoUri: string, index: number) => (
+              <Image
+                key={`${item._id || index}-${index}`}
+                source={{ uri: photoUri }}
+                style={styles.photo}
+              />
+            ))}
+          </View>
+        ) : null}
+        <Text
+          style={[
+            styles.status,
+            item.status === "Pending"
+              ? styles.pending
+              : styles.resolved,
+          ]}
+        >
+          {item.status || 'Pending'}
+        </Text>
+      </View>
+    );
+  };
 
   if (loading) {
     return (
@@ -81,7 +94,7 @@ export default function ViewComplaints() {
       ) : (
         <FlatList
           data={complaints}
-          keyExtractor={(item) => item._id}
+          keyExtractor={(item) => item?._id || Math.random().toString()}
           renderItem={renderItem}
           contentContainerStyle={complaints.length === 0 ? styles.emptyContainer : null}
         />

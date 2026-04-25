@@ -12,15 +12,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useAuth } from "../_contexts/AuthContext";
-import { apiUrl } from "../_utils/api";
+import { useAuth } from '../../src/contexts/AuthContext';
+import { apiUrl } from '../../src/utils/api';
 
 export default function Complaint() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [otherCategory, setOtherCategory] = useState("");
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState<string[]>([]);
   const { token } = useAuth();
 
   // 📸 Open Gallery
@@ -59,22 +59,24 @@ export default function Complaint() {
     formData.append('category', finalCategory);
 
     images.forEach((uri, index) => {
-      const fileName = uri.split('/').pop();
-      const fileType = fileName.split('.').pop();
+      const fileName = uri.split('/').pop() || `image_${index}.jpg`;
+      const fileType = fileName.split('.').pop() || 'jpg';
       formData.append('photos', {
-        uri,
+        uri: uri,
         name: fileName,
         type: `image/${fileType}`,
-      });
+      } as any);
     });
 
     try {
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers['x-auth-token'] = token;
+      }
+
       const response = await fetch(apiUrl('/complaints'), {
         method: 'POST',
-        headers: {
-          'x-auth-token': token,
-          // Don't set Content-Type, let fetch set it for FormData
-        },
+        headers,
         body: formData,
       });
 
@@ -90,7 +92,7 @@ export default function Complaint() {
         const errorData = await response.json();
         Alert.alert("Error", errorData.msg || "Submission failed");
       }
-    } catch (error) {
+    } catch {
       Alert.alert("Error", "Network error");
     }
   };

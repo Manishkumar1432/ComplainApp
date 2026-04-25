@@ -1,8 +1,9 @@
 import { Stack } from 'expo-router';
 import { Text, View } from 'react-native';
 import 'react-native-reanimated';
-import { AuthProvider, useAuth } from './_contexts/AuthContext';
-import './_utils/webFix';
+import { AuthProvider, useAuth } from '../src/contexts/AuthContext';
+import '../src/utils/webFix';
+// app/_layout.tsx
 
 
 

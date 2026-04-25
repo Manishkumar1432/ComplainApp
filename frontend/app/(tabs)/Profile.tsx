@@ -10,33 +10,29 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useAuth } from "../_contexts/AuthContext";
+import { useAuth } from "../../src/contexts/AuthContext";
 
 export default function Profile() {
   const router = useRouter();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   // 🔥 Logout Function with confirmation
   const handleLogout = () => {
-    Alert.alert(
-      "Confirm Logout",
-      "Are you sure you want to logout?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Logout",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await logout();
-              router.replace('/login');
-            } catch (error) {
-              console.log("Logout Error:", error);
-            }
-          },
+    Alert.alert("Confirm Logout", "Are you sure you want to logout?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Logout",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await logout();
+            router.replace("/login");
+          } catch (error) {
+            console.log("Logout Error:", error);
+          }
         },
-      ]
-    );
+      },
+    ]);
   };
 
   return (
@@ -49,16 +45,42 @@ export default function Profile() {
           }}
           style={styles.avatar}
         />
-        <Text style={styles.name}>User</Text>
-        <Text style={styles.email}>Manage your account</Text>
+        <Text style={styles.name}>{user?.name ?? 'User'}</Text>
+        <Text style={styles.email}>{user?.email ?? 'Manage your account'}</Text>
       </View>
 
       {/* ⚙️ Menu */}
       <View style={styles.menu}>
-        <MenuItem icon="person" title="My Profile" />
-        <MenuItem icon="time" title="Track Complaint Status" />
-        <MenuItem icon="settings" title="Settings" />
-        <MenuItem icon="help-circle" title="Help & Support" />
+        <MenuItem
+          icon="person"
+          title="My Profile"
+          onPress={() => router.push("../Pages/Profile")}
+        />
+
+        <MenuItem
+          icon="time"
+          title="Track Complaint Status"
+          onPress={() => router.push("../Pages/MyStatus")}
+        />
+
+        <MenuItem
+          icon="settings"
+          title="Settings"
+          onPress={() => router.push("../Pages/Setting")}
+        />
+
+        <MenuItem
+          icon="help-circle"
+          title="Help & Support"
+          onPress={() => router.push("../Pages/Help")}
+        />
+
+        {/* About App */}
+        <MenuItem
+          icon="information-circle"
+          title="About App"
+          onPress={() => router.push("../Pages/AboutApp")}
+        />
 
         {/* 🔥 Logout */}
         <MenuItem
@@ -73,7 +95,17 @@ export default function Profile() {
 }
 
 // ✅ Menu Item Component (improved)
-const MenuItem = ({ icon, title, onPress, isLast }) => (
+const MenuItem = ({
+  icon,
+  title,
+  onPress,
+  isLast,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  title: string;
+  onPress: () => void;
+  isLast?: boolean;
+}) => (
   <TouchableOpacity
     style={[styles.menuItem, isLast && { borderBottomWidth: 0 }]}
     onPress={onPress}

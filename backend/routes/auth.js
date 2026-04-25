@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
+const auth = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -59,7 +60,16 @@ router.post('/register', [
         throw err;
       }
       console.log('✅ Token generated for:', email);
-      res.json({ token });
+      res.json({
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          address: user.address,
+        },
+      });
     });
   } catch (err) {
     console.error('❌ Register error:', err.message);
@@ -109,11 +119,42 @@ router.post('/login', [
         throw err;
       }
       console.log('✅ Login successful:', email);
-      res.json({ token });
+      res.json({
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          address: user.address,
+        },
+      });
     });
   } catch (err) {
     console.error('❌ Login error:', err.message);
     res.status(500).json({ msg: 'Server error during login', error: err.message });
+  }
+});
+
+router.get('/profile', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    res.json({
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+      },
+    });
+  } catch (err) {
+    console.error('Error fetching user profile:', err.message);
+    res.status(500).json({ msg: 'Server error', error: err.message });
   }
 });
 

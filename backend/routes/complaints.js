@@ -123,9 +123,18 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
-// Update complaint status (for admin, but for now user can update)
+// Edit complaint details
 router.put('/:id', auth, async (req, res) => {
-  const { status } = req.body;
+  const { title, description, category, location, status } = req.body;
+  const updateFields = {};
+
+  if (title) updateFields.title = title;
+  if (description) updateFields.description = description;
+  if (category) updateFields.category = String(category).trim();
+  if (location !== undefined) updateFields.location = location;
+  if (status) updateFields.status = status;
+  updateFields.updatedAt = Date.now();
+
   try {
     let complaint = await Complaint.findById(req.params.id);
     if (!complaint) {
@@ -135,10 +144,28 @@ router.put('/:id', auth, async (req, res) => {
       return res.status(401).json({ msg: 'Not authorized' });
     }
 
-    complaint.status = status;
-    complaint.updatedAt = Date.now();
+    complaint = Object.assign(complaint, updateFields);
     await complaint.save();
     res.json(complaint);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// Delete a complaint
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    const complaint = await Complaint.findById(req.params.id);
+    if (!complaint) {
+      return res.status(404).json({ msg: 'Complaint not found' });
+    }
+    if (complaint.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: 'Not authorized' });
+    }
+
+    await Complaint.deleteOne({ _id: req.params.id });
+    res.json({ msg: 'Complaint deleted successfully' });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
